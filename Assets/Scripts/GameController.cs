@@ -29,6 +29,7 @@ namespace Kai
 
 
         public List<int[]> _board = new List<int[]>();
+        public List<int[]> _optionBoard = new List<int[]>();
         public List<GameObject[]> _gBoard = new List<GameObject[]>();
 
         List<List<Vector2Int>> _transformList = new List<List<Vector2Int>>();
@@ -134,7 +135,26 @@ namespace Kai
             while (reader.Peek() != -1)
             {
                 string line = reader.ReadLine();
-                _board.Add(Array.ConvertAll<string, int>(line.Split(','), int.Parse));
+                var arr = line.Split(',');
+                int[] res = new int[MAX_LENGTH];
+                int[] op = new int[MAX_LENGTH];
+                int count = 0;
+                foreach (string txt in arr) {
+                    // オプションを分割
+                    var typeAndOption = txt.Split('-');
+                    res[count] = int.Parse(typeAndOption[0]);
+                    
+                    if (typeAndOption.Length > 1) {
+                        op[count] = int.Parse(typeAndOption[1]);
+                    }
+                    else {
+                        op[count] = 0;
+                    }
+                    count++;
+                }
+
+                _board.Add(res);
+                _optionBoard.Add(op);
                 _gBoard.Add(new GameObject[MAX_LENGTH]);
             }
 
@@ -146,6 +166,7 @@ namespace Kai
                     newPiece.GetComponent<RectTransform>().anchoredPosition = new Vector2((float)i * PIECE_SIZE - MAX_LENGTH / 2 * PIECE_SIZE, (float)j * PIECE_SIZE - MAX_LENGTH / 2 * PIECE_SIZE);
                     newPiece.GetComponent<Piece>()._pieceType = (PieceType)_board[i][j];
                     newPiece.GetComponent<Piece>()._pieceCood = new Vector2Int(i, j);
+                    newPiece.GetComponent<Piece>()._pieceOption = _optionBoard[i][j];
                     _gBoard[i][j] = newPiece;
                 }
             }

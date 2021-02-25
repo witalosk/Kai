@@ -18,20 +18,19 @@ namespace Kai
     public class Piece : MonoBehaviour
     {
 
-        
+        // SerializeField
         [SerializeField]
         List<Sprite> _pieceSprites = default;
 
+        // public
         public PieceType _pieceType = default;
-
         public Vector2Int _pieceCood = default;
+        public int _pieceOption = default;
 
+        // private
         GameController _gameController;
-
         Vector2Int _mouseDownCood;
-
         float _previousRad = 0f;
-
         float _tan = 0f;
 
         /// <summary>
@@ -41,9 +40,29 @@ namespace Kai
         {
             _gameController = transform.parent.gameObject.GetComponent<GameController>();
 
-            // 画像設定
-            GetComponent<Image>().sprite = _pieceSprites[(int)_pieceType];
+            SetPieceType(_pieceType);
             
+        }
+
+        /// <summary>
+        /// ピースタイプを設定
+        /// </summary>
+        /// <param name="pt"></param>
+        void SetPieceType(PieceType pt)
+        {
+            // 画像設定
+            GetComponent<Image>().sprite = _pieceSprites[(int)pt];
+
+            switch(pt)
+            {
+                case PieceType.CANNON:
+                case PieceType.MIRROR:
+                    if (_pieceOption != 0) {
+                        transform.localRotation = Quaternion.Euler(0f, 0f, 90f * _pieceOption);
+                    }
+                    break;
+            }
+
         }
 
         /// <summary>
