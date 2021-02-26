@@ -12,7 +12,8 @@ namespace Kai
         TRESURE = 2,
         MIRROR = 3,
         STONE = 4,
-        IRON = 5
+        IRON = 5,
+        SLIME = 6
     }
     
     public class Piece : MonoBehaviour
@@ -22,10 +23,14 @@ namespace Kai
         [SerializeField]
         List<Sprite> _pieceSprites = default;
 
+        [SerializeField]
+        GameObject _prohibitedMark;
+
         // public
         public PieceType _pieceType = default;
         public Vector2Int _pieceCood = default;
         public int _pieceOption = default;
+
 
         // private
         GameController _gameController;
@@ -48,8 +53,10 @@ namespace Kai
         /// ピースタイプを設定
         /// </summary>
         /// <param name="pt"></param>
-        void SetPieceType(PieceType pt)
+        public void SetPieceType(PieceType pt)
         {
+            _pieceType = pt;
+
             // 画像設定
             GetComponent<Image>().sprite = _pieceSprites[(int)pt];
 
@@ -63,6 +70,17 @@ namespace Kai
                     break;
             }
 
+            _gameController._board[_pieceCood.x][_pieceCood.y] = (int)pt;
+
+            if (GetRingNum() != 0 && _gameController._prohibitedRing == GetRingNum()) {
+                SetProhibited(true);
+            }
+
+        }
+
+        public void SetProhibited(bool isProhibited)
+        {
+            _prohibitedMark.SetActive(isProhibited);
         }
 
         /// <summary>
@@ -106,8 +124,14 @@ namespace Kai
 
         public void MouseDown()
         {
+            if (_gameController._prohibitedRing == GetRingNum()) return;
+            // Debug.Log(_pieceCood);
+            // Debug.Log(_pieceType);
+            // Debug.Log((PieceType)_gameController._board[_pieceCood.x][_pieceCood.y]);
+            SoundManager.Instance.PlaySe("move");
+            
             _mouseDownCood = new Vector2Int(_pieceCood.x, _pieceCood.y);
-
+            Debug.Log(_mouseDownCood);
             float rad = Mathf.Atan2(MousePositionInAnchoredPos().x, MousePositionInAnchoredPos().y);
 
             _gameController._selectedRing = GetRingNum();
@@ -121,6 +145,8 @@ namespace Kai
 
         public void MouseDrag()
         {
+            if (_gameController._prohibitedRing == GetRingNum()) return;
+
             float rad = Mathf.Atan2(MousePositionInAnchoredPos().x, MousePositionInAnchoredPos().y);
             _tan += Mathf.Tan(rad - _previousRad);
             _gameController._moveAmount = _tan;
@@ -130,6 +156,8 @@ namespace Kai
 
         public void MouseDragEnd()
         {
+            if (_gameController._prohibitedRing == GetRingNum()) return;
+
             _gameController._currentGameStatus = GameStatus.Idle;
             _gameController._moveAmount = 0f;
             _previousRad = 0f;
