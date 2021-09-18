@@ -68,6 +68,28 @@ namespace Kai
                             SoundManager.Instance.PlaySe("break");
                             DeleteThis();
                             break;
+                        case PieceType.WAREMIRROR:
+                            SoundManager.Instance.PlaySe("mirror");
+                            int op3 = _gameController._gBoard[currentCood.x][currentCood.y].GetComponent<Piece>()._pieceOption;
+                            if (_bulletVelocity.x > 0) {
+                                _bulletVelocity = new Vector3(0f, 1f, 0f);
+                            }
+                            else if (_bulletVelocity.x < 0) {
+                                _bulletVelocity = new Vector3(0f, -1f, 0f);
+                            }
+                            else if (_bulletVelocity.y > 0) {
+                                _bulletVelocity = new Vector3(1f, 0f, 0f);
+                            }
+                            else if (_bulletVelocity.y < 0) {
+                                _bulletVelocity = new Vector3(-1f, 0f, 0f);
+                            }
+                            if (op3 == 1 || op3 == 3) {
+                                _bulletVelocity *= -1;
+                            }
+                            _gameController._gBoard[currentCood.x][currentCood.y].GetComponent<Piece>().SetPieceType(PieceType.NONE);
+                            _gameController._gBoard[currentCood.x][currentCood.y].GetComponent<Piece>().SetBoard();
+                            SoundManager.Instance.PlaySe("break");
+                            break;
                         case PieceType.MIRROR:
                             SoundManager.Instance.PlaySe("mirror");
                             int op = _gameController._gBoard[currentCood.x][currentCood.y].GetComponent<Piece>()._pieceOption;
@@ -86,15 +108,29 @@ namespace Kai
                             if (op == 1 || op == 3) {
                                 _bulletVelocity *= -1;
                             }
+                            
                             break;
                         case PieceType.TRESURE:
                             SoundManager.Instance.PlaySe("tresure");
                             DeleteThis();
+                            SaveManager.Instance.SetStageClear(GameController._worldNum, GameController._stageNum);
                             _gameController._mainUIController.GameClear();
                             break;
                         case PieceType.SLIME:
                             SoundManager.Instance.PlaySe("slime");
                             _bulletVelocity*=-1;
+                            break;
+                        case PieceType.DOKAN:
+                            int op2 = _gameController._gBoard[currentCood.x][currentCood.y].GetComponent<Piece>()._pieceOption;
+                            if ((op2 == 0 || op2 == 2) && _bulletVelocity.x != 0f) {
+                                SoundManager.Instance.PlaySe("break");
+                                DeleteThis();
+                            }
+                            else if ((op2 == 1 || op2 == 3) && _bulletVelocity.y != 0f) {
+                                SoundManager.Instance.PlaySe("break");
+                                DeleteThis();
+                            }
+                            SoundManager.Instance.PlaySe("dokan");
                             break;
 
                     }

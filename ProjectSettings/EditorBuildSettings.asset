@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/WorldSelect.unity
     guid: ef4ba928de8d75145becb51fbc713e2b
+  - enabled: 1
+    path: Assets/Scenes/Ending.unity
+    guid: a8eae0875a42a18479b4a7f826a414ef
   m_configObjects: {}

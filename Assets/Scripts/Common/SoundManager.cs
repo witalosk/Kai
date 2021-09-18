@@ -16,16 +16,16 @@ public class BgmDefine
 [System.Serializable]
 public class SoundVolume
 {
-    public float bgm = 0.5f;
+    public float bgm = 1.0f;
     public float se = 1.0f;
 
     public bool mute = false;
 
     public void Reset()
     {
-        // bgm = 1.0f;
-        // se = 1.0f;
-        // mute = false;
+        bgm = 1.0f;
+        se = 1.0f;
+        mute = false;
     }
 }
 
@@ -309,7 +309,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
             IntroloopPlayer.Instance.ApplyVolumeSettingToAllTracks();
         }
 #else
-        bgmSource.volume = volume.bgm * bgmHandle.volume;
+        bgmSource.volume = volume.bgm * bgmHandle.volume * 0.3f;
         /* Debug.Log( "bgmSource.time : " + bgmSource.time ); */
         if (bgmHandle.bgmDefine != null && bgmSource.isPlaying)
         {
@@ -331,7 +331,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
         {
             if (pair.Key.IsValid)
             {
-                pair.Value.volume = volume.se * pair.Key.volume;
+                pair.Value.volume = volume.se * pair.Key.volume * 0.5f;
                 if (pair.Value.IsFinished())
                 {
                     pair.Key.callCompleteCallback();
@@ -390,6 +390,7 @@ public class SoundManager : SingletonMonoBehaviour<SoundManager>
     public Handle PlayBgm(string name)
     {
         int index = bgmIndexes[name];
+        Debug.Log(name + " (" + index.ToString() + ") is playiing.");
         return PlayBgm(index);
     }
 

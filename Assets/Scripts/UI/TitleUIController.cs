@@ -16,7 +16,13 @@ namespace Kai
         public void OnClickStartButton()
         {
             SoundManager.Instance.PlaySe("select");
-            SceneManager.LoadScene("Opening");
+            if (SaveManager.Instance.GetFlag(SaveKeys.INTRODUCTION, 0) == 0) {
+                SaveManager.Instance.SetFlag(SaveKeys.INTRODUCTION, 1);
+                SceneManager.LoadScene("Opening");
+            }
+            else {
+                SceneManager.LoadScene("WorldSelect");
+            }
         }
     }
 

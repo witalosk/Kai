@@ -51,7 +51,7 @@ namespace Kai
         List<GameObject> _howToPlay = new List<GameObject>();
 
         string _stageSubTitle = "";
-
+        GameObject _bullet;
 
 
 
@@ -142,13 +142,33 @@ namespace Kai
             gm.GetComponent<Piece>()._pieceCood = newPos;
         }
 
+        public void PlayBGM()
+        {
+            if (_stageNum > 11) {
+                SoundManager.Instance.PlayBgm("opening");
+                return;
+            }
+            // sound
+            int soundnum = 1;
+            Debug.Log(_stageNum);
+            if (_stageNum > 6) {
+                soundnum = 2;
+            }
+            if (_stageNum > 9) {
+                soundnum = 3;
+            }
+
+            Debug.Log("stageNum: "+ _stageNum);
+            SoundManager.Instance.PlayBgm("stage" + soundnum.ToString());
+
+        }
+
         /// <summary>
         /// ゲームを開始
         /// </summary>
         public void StartGame()
         {
-            // sound
-            SoundManager.Instance.PlayBgm("stage" + _worldNum.ToString());
+            PlayBGM();
             _csvPath = _worldNum.ToString() + "-" + _stageNum.ToString();
 
             ReadCSV("Stages/" + _csvPath);
@@ -156,10 +176,30 @@ namespace Kai
             if (_csvPath=="1-1") {
                 ShowHowToPlay(0);
             }
+            else if (_csvPath=="1-3") {
+                ShowHowToPlay(1);
+            }
+            else if (_csvPath=="1-4") {
+                ShowHowToPlay(2);
+            }
+            else if (_csvPath=="1-6") {
+                ShowHowToPlay(3);
+            }
+            else if (_csvPath=="1-7") {
+                ShowHowToPlay(4);
+            }
         }
 
         public void ResetGame()
         {
+            // if (_currentGameStatus != GameStatus.Idle) {
+            //     SoundManager.Instance.PlaySe("cancel");
+            //     return;
+            // }
+            if (_bullet != null) {
+                Destroy(_bullet);
+            }
+
             SoundManager.Instance.PlaySe("select");
             _csvPath = _worldNum.ToString() + "-" + _stageNum.ToString();
             foreach (var golist in _gBoard) {
@@ -232,7 +272,7 @@ namespace Kai
                 else if (linecount == MAX_LENGTH) {
                     // タイトル
                     _stageSubTitle = arr[0];
-                    _mainUIController.SetStageTitle(_csvPath, _stageSubTitle);
+                    _mainUIController.SetStageTitle(_stageNum.ToString(), _stageSubTitle);
                 }
                 else if (linecount == MAX_LENGTH+1) {
                     // 弾薬数
@@ -254,6 +294,7 @@ namespace Kai
                     GameObject newPiece = Instantiate(_piecePrefab);
                     newPiece.transform.SetParent(transform);
                     newPiece.GetComponent<RectTransform>().anchoredPosition = new Vector2((float)i * PIECE_SIZE - MAX_LENGTH / 2 * PIECE_SIZE, (float)j * PIECE_SIZE - MAX_LENGTH / 2 * PIECE_SIZE);
+                    newPiece.transform.localScale = new Vector3(1f, 1f, 1f);
                     newPiece.GetComponent<Piece>()._pieceType = (PieceType)_board[i][j];
                     newPiece.GetComponent<Piece>()._pieceCood = new Vector2Int(i, j);
                     newPiece.GetComponent<Piece>()._pieceOption = optionBoard[i][j];
@@ -268,11 +309,10 @@ namespace Kai
         /// </summary>
         public void FireBullet()
         {
-            if (_currentGameStatus != GameStatus.Idle) return;
-
-            if (_bulletNum == 0) return;
-
-            
+            if (_currentGameStatus != GameStatus.Idle || _bulletNum == 0){
+                SoundManager.Instance.PlaySe("cancel");
+                return;
+            } 
 
 
 
@@ -292,7 +332,8 @@ namespace Kai
                         newBullet.GetComponent<RectTransform>().anchoredPosition = new Vector2((float)i * PIECE_SIZE - MAX_LENGTH / 2 * PIECE_SIZE, (float)j * PIECE_SIZE - MAX_LENGTH / 2 * PIECE_SIZE);
                         newBullet.GetComponent<Bullet>()._bulletCood = new Vector2Int(i, j);
                         newBullet.GetComponent<Bullet>()._gameController = this;
-
+                        newBullet.GetComponent<RectTransform>().localScale = new Vector3(1f,1f,1f);
+                        _bullet = newBullet;
                         // 大砲の方向によって初期速度を変更
                         int option = _gBoard[i][j].GetComponent<Piece>()._pieceOption;
                         switch(option) {

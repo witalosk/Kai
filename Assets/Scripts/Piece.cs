@@ -13,7 +13,9 @@ namespace Kai
         MIRROR = 3,
         STONE = 4,
         IRON = 5,
-        SLIME = 6
+        SLIME = 6,
+        DOKAN = 7,
+        WAREMIRROR = 8,
     }
     
     public class Piece : MonoBehaviour
@@ -64,6 +66,8 @@ namespace Kai
             {
                 case PieceType.CANNON:
                 case PieceType.MIRROR:
+                case PieceType.DOKAN:
+                case PieceType.WAREMIRROR:
                     if (_pieceOption != 0) {
                         transform.localRotation = Quaternion.Euler(0f, 0f, 90f * _pieceOption);
                     }

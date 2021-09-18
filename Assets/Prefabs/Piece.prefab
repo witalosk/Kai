@@ -97,6 +97,8 @@ MonoBehaviour:
   - {fileID: 21300000, guid: e172ee6595d02974d937defdd3a47293, type: 3}
   - {fileID: 21300000, guid: 4294973c7625e0b4c8e788f2889edde4, type: 3}
   - {fileID: 21300000, guid: 70d8d1ac2b4b5d442a0b8919067ffeb4, type: 3}
+  - {fileID: 21300000, guid: 6f5438e591da64147af20b67ccc83705, type: 3}
+  - {fileID: 21300000, guid: 1ae00f65288845343ab24f6aecae3c30, type: 3}
   _prohibitedMark: {fileID: 6145594474557500639}
   _pieceType: 1
   _pieceCood: {x: 0, y: 0}
